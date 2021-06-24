@@ -3,22 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_std">
 
     <fragment
-        android:id="@+id/nav_home"
+        android:id="@+id/nav_std"
         android:name="com.example.calculator.ui.standard.StandardFragment"
         android:label="@string/stdCalc"
         tools:layout="@layout/fragment_standard" />
 
     <fragment
-        android:id="@+id/nav_gallery"
+        android:id="@+id/nav_sci"
         android:name="com.example.calculator.ui.scientific.ScientificFragment"
         android:label="@string/sciCalc"
         tools:layout="@layout/fragment_scientific" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
+        android:id="@+id/nav_pro"
         android:name="com.example.calculator.ui.programmer.ProgrammerFragment"
         android:label="@string/proCalc"
         tools:layout="@layout/fragment_programmer" />
