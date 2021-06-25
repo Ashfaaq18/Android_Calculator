@@ -3,13 +3,33 @@ package com.example.calculator.ui.standard
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.calculator.App
+import com.example.calculator.R
+import com.example.calculator.logic.Arithmetic
 
 class StandardViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+    val app = App()
+    private val _answer = MutableLiveData("")
+    val arithmetic = Arithmetic()
+    private var fullEditTextInput:String = ""
+    fun answer():LiveData<String>{
+        return _answer
     }
-    val text: LiveData<String> = _text
 
+    fun setDigit(readChar:String){
+        fullEditTextInput = readChar
+       // _answer.value = readChar
+    }
+
+    fun setOper(readChar:String){
+        if(readChar == App.resourses.getString(R.string.BtnStr_add)){
+            _answer.value += "1"
+        }
+    }
+
+    fun interpretInput() {
+
+    }
 
 }

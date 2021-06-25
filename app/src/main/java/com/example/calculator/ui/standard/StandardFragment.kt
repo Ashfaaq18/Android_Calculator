@@ -18,11 +18,11 @@ class StandardFragment : Fragment() {
     private lateinit var standardViewModel: StandardViewModel
     private var _binding: FragmentStandardBinding? = null
     private lateinit var editText:EditText
-    private lateinit var answer:TextView
+    private lateinit var answerText:TextView
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,11 +31,16 @@ class StandardFragment : Fragment() {
 
         standardViewModel =
             ViewModelProvider(this).get(StandardViewModel::class.java)
-
+        standardViewModel.answer().observe(viewLifecycleOwner, {
+            answerText.text = it
+        })
         _binding = FragmentStandardBinding.inflate(inflater, container, false)
 
+
         editText = binding.editTextMultiLine
-        answer = binding.answer
+        editText.requestFocus()
+
+        answerText = binding.answer
         //disable editText keyboard
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // API 21
             editText.showSoftInputOnFocus = false
@@ -43,20 +48,17 @@ class StandardFragment : Fragment() {
             editText.setTextIsSelectable(true)
         }
 
-        editText.addTextChangedListener {
-            answer.text = editText.text
-        }
-
-        binding.zeroUIBtn.setOnClickListener { editText.text.insert(editText.selectionStart, resources.getString(R.string.BtnStr_0)) }
-        binding.oneUIBtn.setOnClickListener { editText.text.insert(editText.selectionStart, resources.getString(R.string.BtnStr_1)) }
-        binding.twoUIBtn.setOnClickListener { editText.text.insert(editText.selectionStart, resources.getString(R.string.BtnStr_2)) }
-        binding.threeUIBtn.setOnClickListener { editText.text.insert(editText.selectionStart, resources.getString(R.string.BtnStr_3)) }
-        binding.fourUIBtn.setOnClickListener { editText.text.insert(editText.selectionStart, resources.getString(R.string.BtnStr_4)) }
-        binding.fiveUIBtn.setOnClickListener { editText.text.insert(editText.selectionStart, resources.getString(R.string.BtnStr_5)) }
-        binding.sixUIBtn.setOnClickListener { editText.text.insert(editText.selectionStart, resources.getString(R.string.BtnStr_6)) }
-        binding.sevenUIBtn.setOnClickListener { editText.text.insert(editText.selectionStart, resources.getString(R.string.BtnStr_7)) }
-        binding.eightUIBtn.setOnClickListener { editText.text.insert(editText.selectionStart, resources.getString(R.string.BtnStr_8)) }
-        binding.nineUIBtn.setOnClickListener { editText.text.insert(editText.selectionStart, resources.getString(R.string.BtnStr_9)) }
+        //----------OnClickListeners-----------//
+        binding.zeroUIBtn.setOnClickListener { setAndReadText(R.string.BtnStr_0) }
+        binding.oneUIBtn.setOnClickListener { setAndReadText(R.string.BtnStr_1) }
+        binding.twoUIBtn.setOnClickListener { setAndReadText(R.string.BtnStr_2) }
+        binding.threeUIBtn.setOnClickListener { setAndReadText(R.string.BtnStr_3) }
+        binding.fourUIBtn.setOnClickListener { setAndReadText(R.string.BtnStr_4) }
+        binding.fiveUIBtn.setOnClickListener { setAndReadText(R.string.BtnStr_5) }
+        binding.sixUIBtn.setOnClickListener { setAndReadText(R.string.BtnStr_6) }
+        binding.sevenUIBtn.setOnClickListener { setAndReadText(R.string.BtnStr_7) }
+        binding.eightUIBtn.setOnClickListener { setAndReadText(R.string.BtnStr_8) }
+        binding.nineUIBtn.setOnClickListener { setAndReadText(R.string.BtnStr_9) }
 
         binding.deleteUIBtn.setOnClickListener {
             val pos: Int = editText.selectionStart
@@ -66,8 +68,18 @@ class StandardFragment : Fragment() {
 
         binding.ACUIBtn.setOnClickListener {
             editText.text.clear()
+            answerText.text = ""
+            standardViewModel.setDigit("")
         }
 
+        binding.addUIBtn.setOnClickListener {
+            editText.text.insert(editText.selectionStart, resources.getString(R.string.BtnStr_add))
+            standardViewModel.setOper(resources.getString(R.string.BtnStr_add))
+        }
+
+        binding.editTextMultiLine.addTextChangedListener {
+            standardViewModel.setDigit(editText.text.toString())
+        }
 
         return binding.root
     }
@@ -76,4 +88,10 @@ class StandardFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    //set button string to editText display and read button to pass to logic controller
+    private fun setAndReadText(RID:Int){
+        editText.text.insert(editText.selectionStart, resources.getString(RID))
+    }
+
 }
