@@ -5,31 +5,63 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.calculator.App
 import com.example.calculator.R
-import com.example.calculator.logic.Arithmetic
+import net.objecthunter.exp4j.ExpressionBuilder
 
 class StandardViewModel : ViewModel() {
 
-    val app = App()
     private val _answer = MutableLiveData("")
-    val arithmetic = Arithmetic()
-    private var fullEditTextInput:String = ""
+    private var equation = ""
+
     fun answer():LiveData<String>{
         return _answer
     }
 
-    fun setDigit(readChar:String){
-        fullEditTextInput = readChar
-       // _answer.value = readChar
+    fun calculate(){
+
+        val eval = ExpressionBuilder(equation).build()
+
+        if(eval.validate().isValid)
+            _answer.value = eval.evaluate().toString()
     }
 
-    fun setOper(readChar:String){
-        if(readChar == App.resourses.getString(R.string.BtnStr_add)){
-            _answer.value += "1"
+    fun setString(readChar:String, cursorPos: Int, stringLength:Int){
+        var varReadChar = ""
+        if(readChar == App.resourses.getString(R.string.BtnStr_mul)){
+            varReadChar = "*"
         }
+        else if(readChar == App.resourses.getString(R.string.BtnStr_div)){
+            varReadChar = "/"
+        }
+        else{
+            varReadChar = readChar
+        }
+
+        if(cursorPos == stringLength){
+            equation = "${equation}${varReadChar}"
+        }
+        else{
+            equation = "${equation.substring(0,cursorPos-1)}${varReadChar}${equation.substring(cursorPos-1,stringLength-1)}"
+        }
+        calculate()
     }
 
-    fun interpretInput() {
+    fun deleteStringChar(pos:Int, stringLength:Int){
+        if(pos == stringLength){
+            equation = "${equation.substring(0,pos-1)}"
+        }
+        else{
+            equation = "${equation.substring(0,pos-1)}${equation.substring(pos,stringLength)}"
+        }
+        //setString("",pos-1,stringLength-1)
+        calculate()
+    }
 
+    fun getString():String{
+        return equation
+    }
+
+    fun reset(){
+        equation = ""
     }
 
 }
